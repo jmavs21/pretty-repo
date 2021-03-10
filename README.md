@@ -4,9 +4,9 @@ A bookmarklet for making github repos pretty.
 
 ## Usage
 
-- Add this [link](https://github.com/jmavs21/pretty-repo/index.js) to you bookmarks.
-- Go to a github repo page.
-- Click on the bookmark.
+1. Add this [link](https://github.com/jmavs21/pretty-repo/index.js) to you bookmarks.
+2. Go to a github repo page.
+3. Click on the bookmark.
 
 ## License
 

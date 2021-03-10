@@ -4,13 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {% comment %}
     <script src="https://use.fontawesome.com/f9d7def6f0.js"></script>
+    {% endcomment %} {% comment %}
     <link rel="stylesheet" href="style.css" />
+    {% endcomment %}
     <script src="index.js" defer></script>
     <title>Pretty Repo</title>
   </head>
   <body>
-    <h2 id="repo">user/repo</h2>
-    <div id="editor"></div>
+    {% comment %}
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="repo">user/repo</h3>
+        <div id="editor"></div>
+      </div>
+    </div>
+    {% endcomment %}
+    <a href='javascript:(function(){console.log("hi");})()'>PR</a>;
   </body>
 </html>
