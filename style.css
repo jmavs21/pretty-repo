@@ -1,0 +1,31 @@
+#editor,
+#repo {
+  width: fit-content;
+  font-family: FontAwesome;
+}
+.foldercontainer,
+.file {
+  display: block;
+  padding: 5px 2px 1px 10px; /* top, right, bottom, left*/
+}
+.folder {
+  color: black;
+}
+.file {
+  color: black;
+}
+.folder,
+.file {
+  cursor: pointer;
+}
+.folder:hover,
+.file:hover {
+  background: #00ffff;
+}
+.folder:before,
+.file:before {
+  padding-right: 5px;
+}
+a {
+  text-decoration: none;
+}
