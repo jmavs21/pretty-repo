@@ -1,110 +1,105 @@
 javascript: (() => {
-  const getRepoUrl = () => {
+  const getRepoInfo = () => {
+    const urlInfoBranch = [
+      'https://github.com/example/pretty-repo',
+      'example/pretty-repo',
+      'master',
+    ];
     const url = window.location.href;
-    if (!url.startsWith('https://github.com/'))
-      return 'https://github.com/example/pretty-repo';
+    if (!url.startsWith('https://github.com/')) return urlInfoBranch;
+    const menuBranch = document.querySelector('#branch-select-menu');
+    if (!menuBranch) return urlInfoBranch;
+    const targetBranch = menuBranch.querySelector('.css-truncate-target');
+    if (!targetBranch) return urlInfoBranch;
     isLocalTest = false;
-    return url;
-  };
-
-  const getBranch = () => {
-    const defaultBranch = 'master';
-    const menu = document.querySelector('#branch-select-menu');
-    if (!menu) return defaultBranch;
-    const target = menu.querySelector('.css-truncate-target');
-    if (!target) return defaultBranch;
-    isLocalTest = false;
-    return target.innerHTML;
+    return [url, url.substring(19), targetBranch.innerHTML];
   };
 
   let isLocalTest = true;
-  const repoUrl = getRepoUrl();
-  const userAndRepo = repoUrl.substring(19);
-  const branch = getBranch();
-  console.log('repoUrl:', repoUrl);
-  console.log('userAndRepo:', userAndRepo);
-  console.log('branch:', branch);
+  const [repoUrl, userAndRepo, branch] = getRepoInfo();
 
   // const cssStyle = document.createElement('style');
   // cssStyle.innerHTML = ""; //
   // document.head.appendChild(cssStyle);
 
   document.body.innerHTML =
-    '<div id="myjmodal" class="jmodal"> <div class="jmodal-content"> <span class="close">&times;</span> <h3 id="repo">user/repo</h3> <div id="editor"></div> </div> </div>';
+    '<div id="modal-pr" class="modal-pr"> <div class="modal-pr-content"> <span class="close-pr">&times;</span> <div id="editor-pr"></div> </div> </div>';
 
   const displayEditor = (paths) => {
-    const map = new Map();
+    const graph = new Map();
     const visited = new Set();
     for (const { path } of paths) {
-      const key = path.substring(0, path.lastIndexOf('/'));
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(path);
+      const folder = path.substring(0, path.lastIndexOf('/'));
+      if (!graph.has(folder)) graph.set(folder, []);
+      graph.get(folder).push(path);
     }
     const editor = [];
-    dfs(editor, map, visited, '');
-    document.getElementById('repo').innerHTML = userAndRepo;
-    document.getElementById('editor').innerHTML = editor.join('');
+    dfs(editor, graph, visited, '');
+    // document.getElementById('repo-pr').innerHTML = userAndRepo;
+    document.getElementById('editor-pr').innerHTML = editor.join('');
   };
 
-  const dfs = (editor, map, visited, jfolder) => {
-    visited.add(jfolder);
-    addjfolderOpen(editor, jfolder);
-    const jfiles = map.get(jfolder);
-    for (const jfile of jfiles) {
-      if (visited.has(jfile)) continue;
-      if (map.has(jfile)) dfs(editor, map, visited, jfile);
-      else addjfile(editor, jfile);
+  const dfs = (editor, graph, visited, folder) => {
+    visited.add(folder);
+    addFolderOpen(editor, folder);
+    const files = graph.get(folder);
+    for (const file of files) {
+      if (visited.has(file)) continue;
+      if (graph.has(file)) dfs(editor, graph, visited, file);
+      else addFile(editor, file);
     }
     addFolerClose(editor);
   };
 
-  const addjfolderOpen = (editor, jfolder) => {
-    const jfolderName = jfolder.substring(jfolder.lastIndexOf('/') + 1);
+  const addFolderOpen = (editor, folder) => {
+    const folderName = getLastWord(folder);
     editor.push(
-      `<div class="jjfoldercontainer"><span class="jfolder i-jfolder-o" data-isexpanded="true">${jfolderName}</span>`
+      `<div class="folder-container-pr"><span class="folder-pr i-folder-pr-o" data-isexpanded="true">${folderName}</span>`
     );
   };
+
+  const getLastWord = (s) => s.substring(s.lastIndexOf('/') + 1);
 
   const addFolerClose = (editor) => editor.push('</div>');
 
-  const addjfile = (editor, jfile) => {
-    const jfileName = jfile.substring(jfile.lastIndexOf('/') + 1);
+  const addFile = (editor, file) => {
+    const fileName = getLastWord(file);
     editor.push(
-      `<a class="jfile i-jfile-code-o" href='${repoUrl}/blob/${branch}/${jfile}'>${jfileName}</a>`
+      `<a class="file-pr i-file-pr-code-o" href='${repoUrl}/blob/${branch}/${file}'>${fileName}</a>`
     );
   };
 
-  document.getElementById('editor').addEventListener('click', (event) => {
+  document.getElementById('editor-pr').addEventListener('click', (event) => {
     const elem = event.target;
-    if (isValidjfolder(event, elem)) {
+    if (isValidFolder(event, elem)) {
       const isexpanded = elem.dataset.isexpanded === 'true';
       if (isexpanded) {
-        elem.classList.remove('i-jfolder-o');
-        elem.classList.add('i-jfolder');
+        elem.classList.remove('i-folder-pr-o');
+        elem.classList.add('i-folder-pr');
       } else {
-        elem.classList.remove('i-jfolder');
-        elem.classList.add('i-jfolder-o');
+        elem.classList.remove('i-folder-pr');
+        elem.classList.add('i-folder-pr-o');
       }
       elem.dataset.isexpanded = !isexpanded;
       for (const elemChild of [...elem.parentElement.children]) {
         for (const className of elemChild.classList) {
-          if (className === 'jfile' || className === 'jjfoldercontainer')
+          if (className === 'file-pr' || className === 'folder-container-pr')
             elemChild.style.display = isexpanded ? 'none' : 'block';
         }
       }
     }
   });
 
-  const isValidjfolder = (event, elem) =>
+  const isValidFolder = (event, elem) =>
     elem.tagName.toLowerCase() === 'span' &&
     elem !== event.currentTarget &&
-    elem.classList.contains('jfolder');
+    elem.classList.contains('folder-pr');
 
-  var jmodal = document.getElementById('myjmodal');
-  var span = document.getElementsByClassName('close')[0];
-  span.onclick = () => (jmodal.style.display = 'none');
+  var modal = document.getElementById('modal-pr');
+  var close = document.getElementsByClassName('close-pr')[0];
+  close.onclick = () => (modal.style.display = 'none');
   window.onclick = (event) => {
-    if (event.target == jmodal) jmodal.style.display = 'none';
+    if (event.target == modal) modal.style.display = 'none';
   };
 
   const raw = {
@@ -128,6 +123,10 @@ javascript: (() => {
   };
 
   if (isLocalTest) {
+    console.log('isLocalTest:', isLocalTest);
+    console.log('repoUrl:', repoUrl);
+    console.log('userAndRepo:', userAndRepo);
+    console.log('branch:', branch);
     displayEditor(raw.tree);
   } else {
     fetch(
