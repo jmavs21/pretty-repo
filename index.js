@@ -18,12 +18,15 @@ javascript: (() => {
   let isLocalTest = true;
   const [repoUrl, userAndRepo, branch] = getRepoInfo();
 
-  // const cssStyle = document.createElement('style');
-  // cssStyle.innerHTML = ""; //
-  // document.head.appendChild(cssStyle);
+  const cssStyle = document.createElement('style');
+  cssStyle.innerHTML =
+    "#editor-pr { padding-bottom: 35%; } #editor-pr, #repo-pr { width: fit-content; font-family: sans-serif; font-size: small; } .folder-container-pr, .file-pr { display: block; padding: 2px 2px 1px 10px; } .folder-pr { color: black; } .file-pr { color: black; } .folder-pr, .file-pr { cursor: pointer; } .folder-pr:hover, .file-pr:hover { background: #00ffff; } .folder-pr:before, .file-pr:before { padding-right: 5px; } a { text-decoration: none; } .i-folder-pr:before { content: '\\1F4C1'; } .i-folder-pr-o:before { content: '\\1F4C2'; } .i-file-pr-code-o:before { content: '\\1F4C4'; } .modal-pr { position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4); } .modal-pr-content { background-color: #fefefe; margin: auto; padding: 10px; border: 1px solid #888; width: fit-content; } .close-pr { color: #aaaaaa; float: right; font-size: 20px; } .close-pr:hover, .close-pr:focus { color: #000; text-decoration: none; cursor: pointer; }";
+  document.head.appendChild(cssStyle);
 
-  document.body.innerHTML =
+  const modalDiv = document.createElement('div');
+  modalDiv.innerHTML =
     '<div id="modal-pr" class="modal-pr"> <div class="modal-pr-content"> <span class="close-pr">&times;</span> <div id="editor-pr"></div> </div> </div>';
+  document.body.appendChild(modalDiv);
 
   const displayEditor = (paths) => {
     const graph = new Map();
@@ -35,7 +38,6 @@ javascript: (() => {
     }
     const editor = [];
     dfs(editor, graph, visited, '');
-    // document.getElementById('repo-pr').innerHTML = userAndRepo;
     document.getElementById('editor-pr').innerHTML = editor.join('');
   };
 
@@ -95,8 +97,8 @@ javascript: (() => {
     elem !== event.currentTarget &&
     elem.classList.contains('folder-pr');
 
-  var modal = document.getElementById('modal-pr');
-  var close = document.getElementsByClassName('close-pr')[0];
+  const modal = document.getElementById('modal-pr');
+  const close = document.getElementsByClassName('close-pr')[0];
   close.onclick = () => (modal.style.display = 'none');
   window.onclick = (event) => {
     if (event.target == modal) modal.style.display = 'none';
