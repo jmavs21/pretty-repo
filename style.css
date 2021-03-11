@@ -1,52 +1,59 @@
-#editor {
+#jeditor {
   padding-bottom: 35%;
 }
-#editor,
-#repo {
+#jeditor,
+#jrepo {
   width: fit-content;
-  font-family: FontAwesome;
+  font-family: 'Courier New', Courier, monospace;
 }
-.foldercontainer,
-.file {
+.jjfoldercontainer,
+.jfile {
   display: block;
-  padding: 5px 2px 1px 10px; /* top, right, bottom, left*/
+  padding: 5px 2px 1px 10px;
 }
-.folder {
+.jfolder {
   color: black;
 }
-.file {
+.jfile {
   color: black;
 }
-.folder,
-.file {
+.jfolder,
+.jfile {
   cursor: pointer;
 }
-.folder:hover,
-.file:hover {
+.jfolder:hover,
+.jfile:hover {
   background: #00ffff;
 }
-.folder:before,
-.file:before {
-  padding-right: 5px;
+.jfolder:before,
+.jfile:before {
+  padding-right: 10px;
 }
 a {
   text-decoration: none;
 }
-
-.modal {
-  /* display: none; */ /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+.i-jfolder:before {
+  content: '\1F4C1';
+}
+.i-jfolder-o:before {
+  content: '\1F4C2';
+}
+.i-jfile-code-o:before {
+  content: '\1F4C4';
+}
+.jmodal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
-.modal-content {
+.jmodal-content {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;
