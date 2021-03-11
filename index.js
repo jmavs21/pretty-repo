@@ -1,26 +1,36 @@
 javascript: (() => {
-  const repoUrl = window.location.href;
+  const getRepoUrl = () => {
+    const url = window.location.href;
+    if (!url.startsWith('https://github.com/'))
+      return 'https://github.com/example/pretty-repo';
+    isLocalTest = false;
+    return url;
+  };
+
+  const getBranch = () => {
+    const defaultBranch = 'master';
+    const menu = document.querySelector('#branch-select-menu');
+    if (!menu) return defaultBranch;
+    const target = menu.querySelector('.css-truncate-target');
+    if (!target) return defaultBranch;
+    isLocalTest = false;
+    return target.innerHTML;
+  };
+
+  let isLocalTest = true;
+  const repoUrl = getRepoUrl();
   const userAndRepo = repoUrl.substring(19);
-  const branch = document
-    .querySelector('#branch-select-menu')
-    .querySelector('.css-truncate-target').innerHTML;
+  const branch = getBranch();
   console.log('repoUrl:', repoUrl);
   console.log('userAndRepo:', userAndRepo);
   console.log('branch:', branch);
 
-  const cssStyle = document.createElement('style');
-  cssStyle.innerHTML =
-    "#editor { padding-bottom: 35%; } #editor, #repo { width: fit-content; font-family: 'Courier New', Courier, monospace; } .jjfoldercontainer, .jfile { display: block; padding: 5px 2px 1px 10px; } .jfolder { color: black; } .jfile { color: black; } .jfolder, .jfile { cursor: pointer; } .jfolder:hover, .jfile:hover { background: #00ffff; } .jfolder:before, .jfile:before { padding-right: 10px; } a { text-decoration: none; } .i-jfolder:before { content: '\\1F4C1'; } .i-jfolder-o:before { content: '\\1F4C2'; } .i-jfile-code-o:before { content: '\\1F4C4'; } .jmodal { position: fixed; z-index: 1; padding-top: 100px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0.4); } .jmodal-content { background-color: #fefefe; margin: auto; padding: 20px; border: 1px solid #888; width: fit-content; } .close { color: #aaaaaa; float: right; font-size: 25px; font-weight: bold; } .close:hover, .close:focus { color: #000; text-decoration: none; cursor: pointer; }";
-  document.head.appendChild(cssStyle);
+  // const cssStyle = document.createElement('style');
+  // cssStyle.innerHTML = ""; //
+  // document.head.appendChild(cssStyle);
 
   document.body.innerHTML =
     '<div id="myjmodal" class="jmodal"> <div class="jmodal-content"> <span class="close">&times;</span> <h3 id="repo">user/repo</h3> <div id="editor"></div> </div> </div>';
-
-  fetch(
-    `https://api.github.com/repos/${userAndRepo}/git/trees/${branch}?recursive=1`
-  )
-    .then((response) => response.json())
-    .then((data) => displayEditor(data.tree));
 
   const displayEditor = (paths) => {
     const map = new Map();
@@ -96,4 +106,34 @@ javascript: (() => {
   window.onclick = (event) => {
     if (event.target == jmodal) jmodal.style.display = 'none';
   };
+
+  const raw = {
+    tree: [
+      { path: 'README.md' },
+      { path: 'LICENSE' },
+      { path: 'api' },
+      { path: 'api/README.md' },
+      { path: 'api/Main.kt' },
+      { path: 'api/users' },
+      { path: 'api/users/UserService.kt' },
+      { path: 'api/posts/PostService.kt' },
+      { path: 'api/resources' },
+      { path: 'api/resources/application.properties' },
+      { path: 'web' },
+      { path: 'web/README.md' },
+      { path: 'web/pages' },
+      { path: 'web/pages/Profile.tsx' },
+      { path: 'web/pages/Posts.tsx' },
+    ],
+  };
+
+  if (isLocalTest) {
+    displayEditor(raw.tree);
+  } else {
+    fetch(
+      `https://api.github.com/repos/${userAndRepo}/git/trees/${branch}?recursive=1`
+    )
+      .then((response) => response.json())
+      .then((data) => displayEditor(data.tree));
+  }
 })();
