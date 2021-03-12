@@ -2,6 +2,8 @@
 
 A bookmarklet for making github repos pretty.
 
+<img src="usage.gif" width="300" title="Usage">
+
 ## Usage
 
 1. Go to this [page](https://jmavs21.github.io/).
