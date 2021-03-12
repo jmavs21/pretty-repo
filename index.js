@@ -23,7 +23,9 @@ javascript: (() => {
   document.head.appendChild(cssStyle);
 
   const modalDiv = document.createElement('div');
-  modalDiv.innerHTML = `<div id='modal-pr' class='modal-pr'> <div class='modal-pr-content'> <span class='close-pr'>&times;</span> <div id='editor-pr'></div> </div> </div>`;
+  modalDiv.setAttribute('id', 'modal-pr');
+  modalDiv.setAttribute('class', 'modal-pr');
+  modalDiv.innerHTML = `<div class='modal-pr-content'> <span class='close-pr'>&times;</span> <div id='editor-pr'></div> </div>`;
   document.body.appendChild(modalDiv);
 
   const displayEditor = (paths) => {
@@ -97,9 +99,11 @@ javascript: (() => {
 
   const modal = document.getElementById('modal-pr');
   const close = document.getElementsByClassName('close-pr')[0];
-  close.onclick = () => (modal.style.display = 'none');
+  close.onclick = () => {
+    modal?.remove();
+  };
   window.onclick = (event) => {
-    if (event.target == modal) modal.style.display = 'none';
+    if (event.target === modal) modal?.remove();
   };
 
   const raw = {
