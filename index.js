@@ -51,7 +51,7 @@ javascript: (() => {
       if (graph.has(file)) dfs(editor, graph, visited, file);
       else addFile(editor, file);
     }
-    addFolerClose(editor);
+    addFolderClose(editor);
   };
 
   const addFolderOpen = (editor, folder) => {
@@ -63,7 +63,7 @@ javascript: (() => {
 
   const getLastWord = (s) => s.substring(s.lastIndexOf('/') + 1);
 
-  const addFolerClose = (editor) => editor.push('</div>');
+  const addFolderClose = (editor) => editor.push('</div>');
 
   const addFile = (editor, file) => {
     const fileName = getLastWord(file);
@@ -84,7 +84,7 @@ javascript: (() => {
         elem.classList.add('i-folder-pr-o');
       }
       elem.dataset.isexpanded = !isexpanded;
-      for (const elemChild of [...elem.parentElement.children]) {
+      for (const elemChild of elem.parentElement.children) {
         for (const className of elemChild.classList) {
           if (className === 'file-pr' || className === 'folder-container-pr')
             elemChild.style.display = isexpanded ? 'none' : 'block';
